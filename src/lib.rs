@@ -1,6 +1,8 @@
-use entities::Parameter;
+pub mod prelude;
+pub mod fuzzy_logic;
 
-mod fuzzy_logic;
+use fuzzy_logic::FuzzyController;
+use prelude::inference::FuzzySystem;
 
 pub trait TrustEvaluator {
     fn evaluate(&self, parameters: &TrustParameters) -> f64;
@@ -45,15 +47,8 @@ impl<T: TrustEvaluator, R: ReputationEvaluator> TrustReputationEngine<T, R> {
 /// in a trust evaluation engine.
 ///
 /// Currently the only functions or method to evaluate trust is by using fuzzy logic
-use fuzzy_rs::FuzzyController;
 
-pub struct FuzzyTrustEvaluator {
-    fuzzy_controller: FuzzyController,
+pub struct FuzzyTrustEvaluator<T> where T: FuzzySystem {
+    fuzzy_controller: FuzzyController<T>,
 }
-
-// #[pymodule]
-// fn rtee(_py: Python<'_>, m: &PyModule) -> PyResult<()> {
-//     m.add_function()
-//     Ok(())
-// }
 

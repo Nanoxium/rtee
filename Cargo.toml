@@ -2,9 +2,9 @@
 name = "rtee"
 version = "0.1.0"
 edition = "2021"
+authors = ["Jérôme Chételat <jerome.chetelat@hesge.ch>"]
 
 [lib]
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-actix = "0.13.0"
