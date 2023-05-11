@@ -1,9 +1,9 @@
 use rtee::prelude::*;
 
 fn main() {
-    let low_trust = FuzzySet::new("low", triangular(0.0, 0.0, 5.0));
-    let medium_trust = FuzzySet::new("medium", triangular(0.0, 5.0, 10.0));
-    let high_trust = FuzzySet::new("high", triangular(5.0, 10.0, 10.0));
+    let low_trust = FuzzySet::new("low", Box::new(triangular(0.0, 0.0, 5.0)));
+    let medium_trust = FuzzySet::new("medium", Box::new(triangular(0.0, 5.0, 10.0)));
+    let high_trust = FuzzySet::new("high", Box::new(triangular(5.0, 10.0, 10.0)));
 
     let reputation = FuzzyVariable::new("reputation", vec![low_trust.clone(), medium_trust.clone(), high_trust.clone()], Box::new(|_| 0.0));
     let transaction_history = FuzzyVariable::new("transaction_history", vec![low_trust.clone(), medium_trust.clone(), high_trust.clone()], Box::new(|_| 0.0));
