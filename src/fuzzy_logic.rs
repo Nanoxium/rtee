@@ -2,24 +2,34 @@ pub mod controller;
 pub mod functions;
 pub mod inference;
 
+use std::rc::Rc;
+
 pub use controller::*;
 
 /// Structure to define a rule for membership of a variable.
-#[derive(Debug, Clone)]
-pub struct Rule<F: Fn(f64) -> f64> {
-    apriori: Vec<FuzzySet<F>>,
-    aposteriori: FuzzySet<F>,
+pub struct Rule {
+    antecedents: Vec<FuzzySet>,
+    consequent: FuzzySet,
+}
+
+impl Rule {
+    pub fn new(antecedents: Vec<FuzzySet>, consequent: FuzzySet) -> Self {
+        Self {
+            antecedents,
+            consequent,
+        }
+    }
 }
 
 /// Struct to represent fuzzy set definitions
-#[derive(Debug, Clone)]
-pub struct FuzzySet<F: Fn(f64) -> f64> {
+#[derive(Clone)]
+pub struct FuzzySet {
     pub name: String,
-    pub membership_fn: Box<F>,
+    pub membership_fn: Rc<dyn Fn(f64) -> f64>,
 }
 
-impl<F: Fn(f64) -> f64> FuzzySet<F> {
-    pub fn new(name: &str, membership_fn: Box<F>) -> Self {
+impl FuzzySet {
+    pub fn new(name: &str, membership_fn: Rc<dyn Fn(f64) -> f64>) -> Self {
         Self {
             name: name.to_string(),
             membership_fn,
@@ -33,16 +43,14 @@ impl<F: Fn(f64) -> f64> FuzzySet<F> {
 }
 
 /// Structure to represent a value that can be inferenced
-#[derive(Debug, Clone)]
-pub struct FuzzyVariable<F: Fn(f64) -> f64> {
+pub struct FuzzyVariable {
     name: String,
-    fuzzy_sets: Vec<FuzzySet<F>>,
-    pub defuzz_fn: Box<F>,
+    fuzzy_sets: Vec<FuzzySet>,
+    pub defuzz_fn: Rc<dyn Fn(f64) -> f64>,
 }
 
-impl<F: Fn(f64) -> f64> FuzzyVariable<F>
-{
-    pub fn new(name: &str, fuzzy_sets: Vec<FuzzySet<F>>, defuzz_fn: Box<F>) -> Self {
+impl FuzzyVariable {
+    pub fn new(name: &str, fuzzy_sets: Vec<FuzzySet>, defuzz_fn: Rc<dyn Fn(f64) -> f64>) -> Self {
         Self {
             name: name.to_string(),
             fuzzy_sets,

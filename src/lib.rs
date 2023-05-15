@@ -5,20 +5,14 @@ use fuzzy_logic::FuzzyController;
 use prelude::inference::FuzzySystem;
 
 pub trait TrustEvaluator {
-    fn evaluate(&self, parameters: &TrustParameters) -> f64;
+    type TrustParameters;
+
+    fn evaluate(&self, parameters: &Self::TrustParameters) -> f64;
 }
 
 pub trait ReputationEvaluator {
-    fn evaluate(&self, parameters: &ReputationParameters) -> f64;
-}
-
-pub struct TrustParameters {
-    perplexity: f64,
-
-}
-
-pub struct ReputationParameters {
-    // Define reputation-related parameters here
+    type ReputationParameters;
+    fn evaluate(&self, parameters: &Self::ReputationParameters) -> f64;
 }
 
 pub struct TrustReputationEngine<T: TrustEvaluator, R: ReputationEvaluator> {
@@ -34,11 +28,11 @@ impl<T: TrustEvaluator, R: ReputationEvaluator> TrustReputationEngine<T, R> {
         }
     }
 
-    pub fn evaluate_trust(&self, parameters: &TrustParameters) -> f64 {
+    pub fn evaluate_trust(&self, parameters: &T::TrustParameters) -> f64 {
         self.trust_evaluator.evaluate(parameters)
     }
 
-    pub fn evaluate_reputation(&self, parameters: &ReputationParameters) -> f64 {
+    pub fn evaluate_reputation(&self, parameters: &R::ReputationParameters) -> f64 {
         self.reputation_evaluator.evaluate(parameters)
     }
 }

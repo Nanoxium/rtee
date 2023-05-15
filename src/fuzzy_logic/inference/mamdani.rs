@@ -1,15 +1,14 @@
 use crate::fuzzy_logic::*;
 use super::FuzzySystem;
 
-#[derive(Debug, Clone)]
-pub struct Mamdani<F: Fn(f64) -> f64> {
-    inputs: Vec<FuzzyVariable<F>>,
-    output: FuzzyVariable<F>,
-    pub rules: Vec<Rule<F>>,
+pub struct Mamdani {
+    inputs: Vec<FuzzyVariable>,
+    output: FuzzyVariable,
+    pub rules: Vec<Rule>,
 }
 
-impl<F: Fn(f64) -> f64> Mamdani<F> {
-    pub fn new(inputs: Vec<FuzzyVariable<F>>, output: FuzzyVariable<F>, rules: Vec<Rule<F>>) -> Self {
+impl Mamdani {
+    pub fn new(inputs: Vec<FuzzyVariable>, output: FuzzyVariable, rules: Vec<Rule>) -> Self {
         Self {
             inputs,
             output,
@@ -18,7 +17,7 @@ impl<F: Fn(f64) -> f64> Mamdani<F> {
     }
 }
 
-impl<F: Fn(f64) -> f64> FuzzySystem for Mamdani<F> {
+impl FuzzySystem for Mamdani {
     // Fuzzify the inputs
     fn fuzzify(&self, input_values: &[f64]) -> Vec<Vec<f64>> {
         self.inputs
@@ -45,7 +44,7 @@ impl<F: Fn(f64) -> f64> FuzzySystem for Mamdani<F> {
             .iter()
             .map(|rule| {
                 let min_value = rule
-                    .apriori
+                    .antecedents
                     .iter()
                     .enumerate()
                     .map(|(i, apriori)| {
@@ -60,7 +59,7 @@ impl<F: Fn(f64) -> f64> FuzzySystem for Mamdani<F> {
                     .min_by(|a, b| a.partial_cmp(b).unwrap())
                     .unwrap();
 
-                rule.aposteriori.membership(min_value)
+                rule.consequent.membership(min_value)
             })
             .collect();
 
