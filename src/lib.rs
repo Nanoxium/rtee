@@ -1,20 +1,27 @@
+//! This crate is a library for trust evaluation. It gives one, many options to combine to be used
+//! in a trust evaluation engine.
+//!
+//! Currently the only functions or method to evaluate trust is by using fuzzy logic
+//! 
+//!
+//!
 pub mod prelude;
 pub mod fuzzy_logic;
 
-use fuzzy_logic::FuzzyController;
-use prelude::inference::FuzzySystem;
-
+/// Trait on how a trust evaluator should interact
 pub trait TrustEvaluator {
-    type TrustParameters;
+    type TrustContext;
 
-    fn evaluate(&self, parameters: &Self::TrustParameters) -> f64;
+    fn evaluate(&self, parameters: &Self::TrustContext) -> f64;
 }
 
+/// Trait on how a trust evaluator should interact
 pub trait ReputationEvaluator {
-    type ReputationParameters;
-    fn evaluate(&self, parameters: &Self::ReputationParameters) -> f64;
+    type ReputationContext;
+    fn evaluate(&self, parameters: &Self::ReputationContext) -> f64;
 }
 
+/// This is the main trust reputation engine. It is the one that will be used to evaluate trust
 pub struct TrustReputationEngine<T: TrustEvaluator, R: ReputationEvaluator> {
     trust_evaluator: T,
     reputation_evaluator: R,
@@ -28,21 +35,14 @@ impl<T: TrustEvaluator, R: ReputationEvaluator> TrustReputationEngine<T, R> {
         }
     }
 
-    pub fn evaluate_trust(&self, parameters: &T::TrustParameters) -> f64 {
+    /// Evaluate the level of trust from given trust parameters
+    pub fn evaluate_trust(&self, parameters: &T::TrustContext) -> f64 {
         self.trust_evaluator.evaluate(parameters)
     }
 
-    pub fn evaluate_reputation(&self, parameters: &R::ReputationParameters) -> f64 {
+    /// Evaluate the reputation given a trust context
+    pub fn evaluate_reputation(&self, parameters: &R::ReputationContext) -> f64 {
         self.reputation_evaluator.evaluate(parameters)
     }
-}
-
-/// This crate is a library for trust evaluation. It gives one, many options to combine to be used
-/// in a trust evaluation engine.
-///
-/// Currently the only functions or method to evaluate trust is by using fuzzy logic
-
-pub struct FuzzyTrustEvaluator<T> where T: FuzzySystem {
-    fuzzy_controller: FuzzyController<T>,
 }
 
