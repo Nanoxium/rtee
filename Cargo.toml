@@ -8,3 +8,6 @@ authors = ["Jérôme Chételat <jerome.chetelat@hesge.ch>"]
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
+anyhow = "1.0.40"
+pest = "2.7.4"
+

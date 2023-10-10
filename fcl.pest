@@ -1,0 +1,19 @@
+// FCL.pest
+
+// Whitespace and comments
+WHITESPACE = _{ " " | "\t" | "\n" | "\r" }
+COMMENT = _{ "//" ~ (!"\n" ~ any)* }
+_ = _{ WHITESPACE | COMMENT }
+
+// Identifiers and terms
+identifier = @{ ASCII_ALPHA ~ (ASCII_ALPHANUMERIC | ["_", "-", "/", ".", ":"])* }
+term = @{ identifier }
+expression = { identifier ~ "IS" ~ identifier }
+ 
+// FCL rule
+rule = {
+    "IF" ~ expression ~ "AND" ~ expression ~ "THEN" ~ expression ~ "IS" ~ expression
+}
+
+// FCL program
+fcl = { SOI ~ rule ~ EOI }
