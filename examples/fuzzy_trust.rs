@@ -18,6 +18,7 @@ fn main() {
         vec![low_trust.clone(), medium_trust.clone(), high_trust.clone()],
         Rc::new(|_| 0.0),
     );
+
     let trust_level = FuzzyVariable::new(
         "trust_level",
         vec![low_trust.clone(), medium_trust.clone(), high_trust.clone()],

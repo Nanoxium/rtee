@@ -7,7 +7,7 @@
 //!
 pub mod prelude;
 pub mod fuzzy_logic;
-pub mod flc_builder;
+pub mod fcl_builder;
 
 /// Trait on how a trust evaluator should interact
 pub trait TrustEvaluator {

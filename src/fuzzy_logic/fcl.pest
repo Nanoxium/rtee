@@ -17,3 +17,6 @@ rule = {
 
 // FCL program
 fcl = { SOI ~ rule ~ EOI }
+
+// IF reputation IS high THEN trust IS high
+// IF repuation IS low THEN trust IS medium

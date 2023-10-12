@@ -1,14 +1,14 @@
 #[macro_use]
-use pest::Parser;
+use pest_derive::Parser;
 
 use crate::prelude::Rule;
 
 #[derive(Parser)]
-#[grammar = "flc.pest"]
-struct FLCParser;
+#[grammar = "fuzzy_logic/fcl.pest"]
+struct FCLParser;
 
 fn fcl_parser(input: &str) -> Result<(), pest::error::Error<Rule>> {
-    let pairs = FLCParser::parse(Rule::rule, input)?;
+    let pairs = FCLParser::parse(Rule::rule, input)?;
     for pair in pairs {
         println!("Rule:    {:?}", pair.as_rule());
         println!("Span:    {:?}", pair.as_span());
