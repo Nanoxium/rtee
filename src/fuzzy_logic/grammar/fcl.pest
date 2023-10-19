@@ -1,0 +1,43 @@
+// // FCL.pest
+// 
+// // Whitespace and comments
+// WHITESPACE = _{ " " | "\t" | "\n" | "\r" }
+// COMMENT = _{ "//" ~ (!"\n" ~ ANY)* }
+// WHITESPACES = _{ WHITESPACE | COMMENT }
+// 
+// // Identifiers and terms
+// identifier = @{ ASCII_ALPHA ~ (ASCII_ALPHANUMERIC | "_" | "-" | "/" | "." | ":")* }
+// term = @{ identifier }
+// expression = { identifier ~ "IS" ~ identifier }
+//  
+// // FCL rule
+// rule = {
+//     "IF" ~ expression ~ ("AND" ~ expression | "OR" ~ expression)* ~ "THEN" ~ expression
+// }
+// 
+// // FCL program
+// fcl = { SOI ~ rule ~ EOI }
+// 
+// IF reputation IS high THEN trust IS high
+// IF reputation IS low THEN trust IS medium
+
+
+fcl_program = { SOI ~ function_block_declaration+ ~ EOI }
+
+function_block_declaration = _{ "FUNCTION_BLOCK" ~ identifier ~ "{" ~ rule_block+ ~ "}" }
+
+rule_block = _{ "RULES" ~ ":" ~ rule+ }
+
+rule = { "IF" ~ condition ~ ( "AND" ~ condition | "OR" ~ condition )* ~ "THEN" ~ consequence }
+
+condition = { expression | "(" ~ condition ~ ")" }
+
+consequence = { variable ~ "IS" ~ fuzzy_set }
+
+expression = { variable ~ "IS" ~ fuzzy_set }
+
+variable = @{ identifier }
+
+fuzzy_set = @{ identifier }
+
+identifier = @{ ASCII_ALPHA ~ (ASCII_ALPHANUMERIC | "_" | "-")* }

@@ -1,8 +1,9 @@
 use pest::Parser;
 use pest_derive::Parser;
 
+
 #[derive(Parser)]
-#[grammar = "fuzzy_logic/fcl.pest"]
+#[grammar = "fuzzy_logic/grammar/fcl.pest"]
 pub struct FCLParser;
 
 pub fn fcl_parser(input: &str) -> Result<(), pest::error::Error<Rule>> {
@@ -23,3 +24,11 @@ pub fn fcl_parser(input: &str) -> Result<(), pest::error::Error<Rule>> {
     }
     Ok(())
 }
+
+// #[derive(Parser)]
+// #[grammar = "fuzzy_logic/grammar/fll.pest"]
+// pub struct FLLParser;
+
+// pub fn fll_parser(input: &str) -> Result<(), pest::error::Error<Rule>> {
+//     todo!("Fill this function")
+// }

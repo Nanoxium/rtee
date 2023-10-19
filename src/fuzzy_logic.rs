@@ -1,10 +1,13 @@
 pub mod controller;
 pub mod functions;
 pub mod inference;
+pub mod control_language;
 
 use std::rc::Rc;
 
 pub use controller::*;
+pub use control_language::*;
+
 
 /// Structure to define a rule for membership of a variable.
 pub struct Rule {

@@ -1,0 +1,33 @@
+//! A parser for Fuzzy Logic Language from Fuzzylite library
+fll = _{ engine }
+engine = { "Engine" ~ "{" ~ input_variable* ~ output_variable* ~ rule_block* ~ "}" }
+input_variable = { "InputVariable" ~ "{" ~ property* ~ "}" }
+output_variable = { "OutputVariable" ~ "{" ~ property* ~ "}" }
+rule_block = { "RuleBlock" ~ "{" ~ property* ~ "}" }
+property = { enabled | range | term | aggregation | defuzzifier | default | lock_previous | lock_range | conjunction | disjunction | implication | activation | rule | comment }
+enabled = { "enabled" ~ "=" ~ boolean ~ ";" }
+range = { "range" ~ "=" ~ scalar ~ ".." ~ scalar ~ ";" }
+term = { "term" ~ "=" ~ identifier ~ parameters ~ ";" }
+aggregation = { "aggregation" ~ "=" ~ SNorm ~ ";" }
+defuzzifier = { "defuzzifier" ~ "=" ~ Defuzzifier ~ ";" }
+default = { "default" ~ "=" ~ scalar ~ ";" }
+lock_previous = { "lock-previous" ~ "=" ~ boolean ~ ";" }
+lock_range = { "lock-range" ~ "=" ~ boolean ~ ";" }
+conjunction = { "conjunction" ~ "=" ~ TNorm ~ ";" }
+disjunction = { "disjunction" ~ "=" ~ TNorm ~ ";" }
+implication = { "implication" ~ "=" ~ SNorm ~ ";" }
+activation = { "activation" ~ "=" ~ Activation ~ ";" }
+rule = { "rule" ~ "=" ~ text ~ ";" }
+boolean = { "true" | "false" }
+scalar = { ("0".."9")+ ~ ("." ~ ("0".."9"])+)? | "nan" | "inf" | "-inf" }
+identifier = { ('A'..'Z' | 'a'..'z' | '_')+ }
+parameters = { parameter* }
+parameter = { text | scalar | identifier | none }
+text = { (!["\r\n"] ~ ANY)+ }
+none = { "none" }
+TNorm = { identifier }
+SNorm = { identifier }
+Activation = { identifier }
+Defuzzifier = { identifier }
+WHITESPACE = _{ ("\t" | "\r" | "\n")* | "#" ~ ASCII }
+
