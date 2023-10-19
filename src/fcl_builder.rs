@@ -1,13 +1,14 @@
-#[macro_use]
+use pest::Parser;
 use pest_derive::Parser;
-
-use crate::prelude::Rule;
 
 #[derive(Parser)]
 #[grammar = "fuzzy_logic/fcl.pest"]
-struct FCLParser;
+pub struct FCLParser;
 
-fn fcl_parser(input: &str) -> Result<(), pest::error::Error<Rule>> {
+pub fn fcl_parser(input: &str) -> Result<(), pest::error::Error<Rule>> {
+    // let ident = FCLParser::parse(Rule::rule, input)?;
+    // println!("Ident: {:?}", ident);
+
     let pairs = FCLParser::parse(Rule::rule, input)?;
     for pair in pairs {
         println!("Rule:    {:?}", pair.as_rule());

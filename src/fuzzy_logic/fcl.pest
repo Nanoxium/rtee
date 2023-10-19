@@ -2,11 +2,11 @@
 
 // Whitespace and comments
 WHITESPACE = _{ " " | "\t" | "\n" | "\r" }
-COMMENT = _{ "//" ~ (!"\n" ~ any)* }
-_ = _{ WHITESPACE | COMMENT }
+COMMENT = _{ "//" ~ (!"\n" ~ ANY)* }
+WHITESPACES = _{ WHITESPACE | COMMENT }
 
 // Identifiers and terms
-identifier = @{ ASCII_ALPHA ~ (ASCII_ALPHANUMERIC | ["_", "-", "/", ".", ":"])* }
+identifier = @{ ASCII_ALPHA ~ (ASCII_ALPHANUMERIC | "_" | "-" | "/" | "." | ":")* }
 term = @{ identifier }
 expression = { identifier ~ "IS" ~ identifier }
  
@@ -20,3 +20,5 @@ fcl = { SOI ~ rule ~ EOI }
 
 // IF reputation IS high THEN trust IS high
 // IF repuation IS low THEN trust IS medium
+
+
