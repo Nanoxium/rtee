@@ -19,7 +19,7 @@ implication = { "implication" ~ "=" ~ SNorm ~ ";" }
 activation = { "activation" ~ "=" ~ Activation ~ ";" }
 rule = { "rule" ~ "=" ~ text ~ ";" }
 boolean = { "true" | "false" }
-scalar = { ("0".."9")+ ~ ("." ~ ("0".."9"])+)? | "nan" | "inf" | "-inf" }
+scalar = { ("0".."9")+ ~ ("." ~ ("0".."9")+ )? | "nan" | "inf" | "-inf" }
 identifier = { ('A'..'Z' | 'a'..'z' | '_')+ }
 parameters = { parameter* }
 parameter = { text | scalar | identifier | none }

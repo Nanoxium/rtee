@@ -1,8 +1,38 @@
 // // FCL.pest
 // 
 // // Whitespace and comments
-// WHITESPACE = _{ " " | "\t" | "\n" | "\r" }
-// COMMENT = _{ "//" ~ (!"\n" ~ ANY)* }
+WHITESPACE = _{ " " | "\t" | "\n" | "\r" }
+COMMENT = _{ "//" ~ (!"\n" ~ ANY)* | "/*" ~ (!"*/" ~ ANY)* ~ "*/" }
+
+// FCL program
+fcl = { SOI ~ function_block+ ~ EOI }
+block = { function_block | var_input | var_output | fuzzify | defuzzify | ruleblock }
+function_block = { "FUNCTION_BLOCK" ~ identifier ~ block* ~ "END_FUNCTION_BLOCK" }
+var_input = { "VAR_INPUT" ~ declaration+ ~ "END_VAR" }
+var_output = { "VAR_OUTPUT" ~ declaration+ ~ "END_VAR" }
+fuzzify = { "FUZZIFY" ~ identifier ~ term+ ~ "END_FUZZIFY" }
+defuzzify = { "DEFUZZIFY" ~ identifier ~ term+ ~ method ~ "END_DEFUZZIFY" }
+ruleblock = { "RULEBLOCK" ~ identifier ~ operators ~ rule+ ~ "END_RULEBLOCK" }
+// ruleblock = { "RULEBLOCK" ~ identifier ~ "END_RULEBLOCK" }
+declaration = { identifier ~ ":" ~ var_type ~ ";" }
+term = { "TERM" ~ identifier ~ ":=" ~ tuple+ ~ ";" }
+tuple = { "(" ~ number ~ "," ~ number ~ ")" }
+method = { "METHOD" ~ ":" ~ function_op ~ ";" }
+// operators = { ("AND" | "OR" | "ACCU") ~ ":" ~ function_op ~ ";" }
+operators = { ("AND:" ~ function_op ~ ";")? ~ ("OR:" ~ function_op ~ ";")? ~ ("ACCU:" ~ function_op ~ ";")? }
+rule = { "RULE" ~ number ~ ":" ~ "IF" ~ antecedent ~ "THEN" ~ consequent ~ ";" }
+antecedent = { expression ~ (("AND" ~ expression) | ("OR" ~ expression))* }
+consequent = { identifier ~ "IS" ~ identifier }
+expression = { identifier ~ "IS" ~ identifier }
+identifier = @{ ASCII_ALPHANUMERIC+ }
+function_op = @{ "MIN" | "PROD" | "MAX" | "B_SUM" | "B_PROBOR" | "B_PROBAND" | "COG" | "COA" | "MOM" | "SOM" | "LOM" }
+var_type = @{ "REAL" | "LREAL" | "INT" | "LINT" | "DINT" | "SINT" | "USINT" | "UINT" | "UDINT" | "ULINT" | "BOOL" }
+number = @{ "-"* ~ ASCII_DIGIT+ ~ ("." ~ ASCII_DIGIT+)? }
+
+
+
+
+
 // WHITESPACES = _{ WHITESPACE | COMMENT }
 // 
 // // Identifiers and terms
@@ -22,22 +52,29 @@
 // IF reputation IS low THEN trust IS medium
 
 
-fcl_program = { SOI ~ function_block_declaration+ ~ EOI }
+// fcl_program = { SOI ~ function_block_declaration+ ~ EOI }
+// 
+// function_block_declaration = _{ "FUNCTION_BLOCK" ~ identifier ~ (variable_input_block | variable_output_block)+ ~ rule_block+ ~ "END_FUNCTION_BLOCK" }
+// 
+// rule_block = _{ "RULEBLOCK" ~ identifier ~ rule+ ~ "END_RULEBLOCK" }
+// 
+// rule = { "IF" ~ condition ~ ( "AND" ~ condition | "OR" ~ condition )* ~ "THEN" ~ consequence }
+// 
+// condition = { expression | "(" ~ condition ~ ")" }
+// 
+// consequence = { variable ~ "IS" ~ fuzzy_set }
+// 
+// expression = { variable ~ "IS" ~ fuzzy_set }
+// 
+// 
+// variable_input_block = @{ "VAR_INPUT" ~ (variable ~ ";")+ ~ "END_VAR" }
+// variable_output_block = @{ "VAR_OUTPUT" ~ (variable ~ ";")+ ~ "END_VAR" }
+// variable = @{ identifier ~ ":" ~ vartype }
+// vartype = @{ "REAL" | "LREAL" | "INT" | "LINT" | "DINT" | "SINT" | "USINT" | "UINT" | "UDINT" | "ULINT" | "BOOL" }
+// 
+// fuzzy_set = @{ identifier }
+// 
+// WHITESPACE = _{ " " | "\t" | "\n" | "\r" }
+// 
+// identifier = @{ ASCII_ALPHA ~ (ASCII_ALPHANUMERIC | "_" | "-")* }
 
-function_block_declaration = _{ "FUNCTION_BLOCK" ~ identifier ~ "{" ~ rule_block+ ~ "}" }
-
-rule_block = _{ "RULES" ~ ":" ~ rule+ }
-
-rule = { "IF" ~ condition ~ ( "AND" ~ condition | "OR" ~ condition )* ~ "THEN" ~ consequence }
-
-condition = { expression | "(" ~ condition ~ ")" }
-
-consequence = { variable ~ "IS" ~ fuzzy_set }
-
-expression = { variable ~ "IS" ~ fuzzy_set }
-
-variable = @{ identifier }
-
-fuzzy_set = @{ identifier }
-
-identifier = @{ ASCII_ALPHA ~ (ASCII_ALPHANUMERIC | "_" | "-")* }
