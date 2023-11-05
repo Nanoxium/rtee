@@ -106,7 +106,7 @@ fn test_fcl_consequent() {
 
 #[test]
 fn test_fcl_rule_parsing() {
-    let input_text = r#"RULE 1 : IF temperature IS cold AND humidity IS low THEN heating IS high;"#;
+    let input_text = r#"RULE 1 : IF temperature IS cold AND humidity IS low OR humidity IS medium THEN heating IS high;"#;
     let values = FCLParser::parse(Rule::rule, input_text);
     if let Err(error) = &values {
         eprintln!("Error: {error:?}");

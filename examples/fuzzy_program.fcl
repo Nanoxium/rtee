@@ -5,7 +5,6 @@ VAR_INPUT
   humidity: REAL;     // Input variable for humidity in percentage
 END_VAR
 
-/*
 VAR_OUTPUT
   heating: REAL;      // Output variable for heating in percentage
 END_VAR

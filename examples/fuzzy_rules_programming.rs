@@ -1,21 +1,27 @@
 use rtee::prelude::*;
 use std::{fs::File, io::Read};
+use anyhow::Result;
 
-fn main() {
+fn main() -> Result<()> {
     // let rules = "IF reputation IS low AND trust IS low THEN trust IS medium";
     // let fcl_program = "IF reputation IS low THEN trust IS high;";
     // Read fuzzy program file and load content into a string
-    let mut fcl_program = String::new();
-    let mut fcl_file = File::open("examples/fuzzy_program.fcl").unwrap();
-    fcl_file.read_to_string(&mut fcl_program).unwrap();
-    println!("FCL Program: {fcl_program:#?}");
 
-    let values = fcl_parser(fcl_program.as_str());
-    if let Ok(rules) = values {
-        println!("{rules:?}");
-    } else {
-        eprintln!("Error while parsing rules in FCL: {values:#?}")
-    }
+    println!("cwd : {}", std::env::current_dir().unwrap().display());
+    let mut fcl_program = String::new();
+    let mut fcl_file = File::open("fuzzy_program.fcl").unwrap();
+
+    fcl_file.read_to_string(&mut fcl_program).unwrap();
+
+
+    let start = std::time::Instant::now();
+    let mut values = fcl_parser(fcl_program.as_str())?;
+    let stop = std::time::Instant::now();
+    println!("Elapsed time for fcl parsing using pest: {:?}", stop.duration_since(start));
+
+    let ast = generate_ast(values.next().unwrap());
+    println!("{ast:#?}");
+    Ok(())
 
 //     let fll_program = r"#from examples/mamdani/ObstacleAvoidance.fll  
 // Engine: ObstacleAvoidance
