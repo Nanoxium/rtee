@@ -7,6 +7,7 @@
 //!
 pub mod prelude;
 pub mod fuzzy_logic;
+pub mod subjective_logic;
 
 /// Trait on how a trust evaluator should interact
 pub trait TrustEvaluator {

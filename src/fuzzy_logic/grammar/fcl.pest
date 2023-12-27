@@ -62,7 +62,7 @@ declaration = {
 
 fuzzyset = { "TERM" ~ identifier ~ ":=" ~ tuple+ ~ ";" }
 term = { "TERM" ~ identifier ~ ":=" ~ tuple+ ~ ";" }
-tuple = _{ "(" ~ number ~ "," ~ number ~ ")" }
+tuple = { "(" ~ number ~ "," ~ number ~ ")" }
 method = { "METHOD" ~ ":" ~ function_op ~ ";" }
 // operators = { ("AND" | "OR" | "ACCU") ~ ":" ~ function_op ~ ";" }
 operators = {
@@ -87,11 +87,11 @@ identifier = @{ ASCII_ALPHA ~ (ASCII_ALPHANUMERIC | "_")* }
 function_op = @{
   "MIN" |       // Minimum
   "PROD" |      // Product
-  "MAX" // |       // Maximum
+  "MAX" |       // Maximum
   // "B_SUM" |     // Bounded sum
   // "B_PROBOR" |  // Bounded probabilistic sum
   // "B_PROBAND" | // Bounded product
-  // "COG" |       // Center of gravity
+  "COG" //|       // Center of gravity
   // "COA" |       // Center of area
   // "MOM" |       // Mean of maximum
   // "SOM" |       // Smallest of maximum

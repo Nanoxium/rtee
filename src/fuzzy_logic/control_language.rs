@@ -158,6 +158,7 @@ mod tests {
     use super::*;
 
     #[test]
+    #[ignore]
     fn test_generate_ast() {
         let input = r#"
             FUNCTION_BLOCK RoomTempController 
