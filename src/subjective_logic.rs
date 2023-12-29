@@ -1,161 +1,56 @@
 // Define the structure of an Opinion in subjective logic.
-#[derive(Debug, Clone, Copy)]
-struct Opinion {
-    belief: f64,
-    disbelief: f64,
-    uncertainty: f64,
-    base_rate: f64,
-}
+pub mod binomial_opinion;
 
-impl Opinion {
+
+trait SLOpertors {
     // Initialize a new opinion ensuring it's valid.
-    fn new(belief: f64, disbelief: f64, uncertainty: f64, base_rate: f64) -> Self {
-        assert!(belief + disbelief + uncertainty <= 1.0);
-        assert!(belief >= 0.0 && disbelief >= 0.0 && uncertainty >= 0.0);
-        assert!(base_rate >= 0.0 && base_rate <= 1.0);
-        Opinion {
-            belief,
-            disbelief,
-            uncertainty,
-            base_rate,
-        }
-    }
+    fn new(belief: f64, disbelief: f64, uncertainty: f64, base_rate: f64) -> Self;
 
-    // Union (Addition)
-    fn union(self, other: Self) -> Self {
-        let b = self.belief + other.belief - self.belief * other.belief;
-        let d = self.disbelief * other.disbelief;
-        let u = self.uncertainty + other.uncertainty - self.uncertainty * other.uncertainty;
-        let a = (self.base_rate * self.uncertainty + other.base_rate * other.uncertainty) / u;
-    
-        Self::new(b, d, u, a)
-    }
+    /// Calculate the projected probability P(x)
+    fn prob(self) -> f64;
+
+    /// Addition operator
+    /// ```
+    ///
+    /// ```
+    fn addition(self, other: Self) -> Self;
 
     // Difference (Subtraction)
-    fn difference(self, other: Self) -> Self {
-        // Implement the formula for Difference here.
-        // Placeholder implementation:
-        self
-    }
+    fn substract(self, other: Self) -> Self;
 
     // Conjunction / AND (Multiplication)
-    fn conjunction(self, other: Self) -> Self {
-        // Implement the formula for Conjunction here.
-        // Placeholder implementation:
-        self
-    }
+    fn multiply(self, other: Self) -> Self;
 
     // Unconjunction / UN-AND (Division)
-    fn unconjunction(self, other: Self) -> Self {
-        // Implement the formula for Unconjunction here.
-        // Placeholder implementation:
-        self
-    }
+    fn divide(self, other: Self) -> Self;
 
     // Disjunction / OR (Comultiplication)
-    fn disjunction(self, other: Self) -> Self {
-        // Implement the formula for Disjunction here.
-        // Placeholder implementation:
-        self
-    }
+    fn comult(self, other: Self) -> Self;
 
     // Undisjunction / UN-OR (Codivision)
-    fn undisjunction(self, other: Self) -> Self {
-        // Implement the formula for Undisjunction here.
-        // Placeholder implementation:
-        self
-    }
+    fn codiv(self, other: Self) -> Self;
 
     // NOT (Complement)
-    fn complement(self) -> Self {
-        // Implement the formula for Complement here.
-        // Placeholder implementation:
-        self
-    }
+    fn complement(self) -> Self;
 
     // Modus ponens (Deduction)
-    fn deduction(self, other: Self) -> Self {
-        // Implement the formula for Deduction here.
-        // Placeholder implementation:
-        self
-    }
+    fn deduct(self, other: Self) -> Self;
 
     // Contraposition (Subjective Bayes' theorem)
-    fn contraposition(self, other: Self) -> Self {
-        // Implement the formula for Contraposition here.
-        // Placeholder implementation:
-        self
-    }
+    fn subjective_bayes(self, other: Self) -> Self;
 
     // Modus tollens (Abduction)
-    fn abduction(self, other: Self) -> Self {
-        // Implement the formula for Abduction here.
-        // Placeholder implementation:
-        self
+    fn abduct(self, other: Self) -> Self;
+
+    fn cumul_fuse(self, other: Self) -> Self;
+
+    fn constrained_fuse(self, other: Self) -> Self;
+
+    /// Return whether the two numbers `a` and `b` are close.
+    /// Closeness is determined by the `epsilon` parameter - 
+    /// the numbers are considered close if the difference between them
+    /// is no more than epsilon * max(abs(a), abs(b)).
+    fn _isclose(a: f64, b: f64, epsilon: f64) -> bool {
+        (a - b).abs() <= a.abs().max(b.abs()) * epsilon
     }
-
-    // ... other operations and utility functions ...
-}
-
-impl std::ops::Add for Opinion {
-    type Output = Self;
-
-    fn add(self, other: Self) -> Self {
-        self.union(other)
-    }
-}
-
-impl std::ops::Sub for Opinion {
-    type Output = Self;
-
-    fn sub(self, other: Self) -> Self {
-        self.difference(other)
-    }
-}
-
-impl std::ops::Mul for Opinion {
-    type Output = Self;
-
-    fn mul(self, other: Self) -> Self {
-        self.conjunction(other)
-    }
-}
-
-impl std::ops::Div for Opinion {
-    type Output = Self;
-
-    fn div(self, other: Self) -> Self {
-        self.unconjunction(other)
-    }
-}
-
-impl std::ops::BitOr for Opinion {
-    type Output = Self;
-
-    fn bitor(self, other: Self) -> Self {
-        self.disjunction(other)
-    }
-}
-
-// Implement tests for each operation ensuring correctness.
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_operations() {
-        let op1 = Opinion::new(0.3, 0.2, 0.5, 0.5);
-        let op2 = Opinion::new(0.4, 0.3, 0.3, 0.5);
-        // Test each operation individually, asserting the expected results.
-    }
-
-    // Additional tests for each operation...
-}
-
-fn main() {
-    // Example usage of the library.
-    let op1 = Opinion::new(0.3, 0.2, 0.5, 0.5);
-    let op2 = Opinion::new(0.4, 0.3, 0.3, 0.5);
-    // Demonstrate some operations.
-    println!("Result of an operation: {:?}", op1.union(op2));
 }

@@ -1,5 +1,6 @@
 [package]
 name = "rtee"
+description = "Rust Trust Evaluation Engine library"
 version = "0.1.0"
 edition = "2021"
 authors = ["Jérôme Chételat <jerome.chetelat@hesge.ch>"]
@@ -8,7 +9,10 @@ authors = ["Jérôme Chételat <jerome.chetelat@hesge.ch>"]
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-anyhow = "1.0.75"
-pest = "2.7.4"
-pest_derive = "2.7.4"
+anyhow = "1.0.77"
+pest = "2.7.5"
+pest_derive = "2.7.5"
+assert_float_eq = "1.1.3"
 
+[package.metadata.docs.rs]
+rustdoc-args = [ "--html-in-header", "./src/docs-header.html" ]
