@@ -16,26 +16,6 @@ struct BinomialOpinion {
     base_rate: f64,
 }
 
-macro_rules! opinion_elements {
-    ($x:ident) => {
-        let BinomialOpinion {
-            belief: $bx,
-            disbelief: $dx,
-            uncertainty: $ux,
-            base_rate: $ax,
-        } = $x;
-    };
-    ($x:ident, $y: ident) => {
-        opinion_elements!($x);
-        let BinomialOpinion {
-            belief: $by,
-            disbelief: $dy,
-            uncertainty: $uy,
-            base_rate: $ay,
-        } = $y;
-    };
-}
-
 impl SLOpertors for BinomialOpinion {
     // Initialize a new opinion ensuring it's valid.
     fn new(belief: f64, disbelief: f64, uncertainty: f64, base_rate: f64) -> Self {
@@ -76,7 +56,7 @@ impl SLOpertors for BinomialOpinion {
 
         let a = ax + ay;
         let b = bx + by;
-        let d = ((ay * (dx - by)) + (ay * (dy - bx))) / a;
+        let d = ((ax * (dx - by)) + (ay * (dy - bx))) / a;
         let u = (ax * ux + ay * uy) / a;
 
         Self::new(b, d, u, a)
@@ -94,7 +74,7 @@ impl SLOpertors for BinomialOpinion {
 
         let BinomialOpinion {
             belief: by,
-            disbelief: dy,
+            disbelief: _,
             uncertainty: uy,
             base_rate: ay,
         } = other;
@@ -371,7 +351,7 @@ mod tests {
 
     #[test]
     fn test_binomial_multiplication() {
-        // Test taken from book A. Josang Subjective Logic. chap 6 fig 6.2
+        // Test taken from book A. Josang Subjective Logic. chap 7 fig 7.2
         let op1 = BinomialOpinion::new(0.75, 0.15, 0.1, 0.5);
         let op2 = BinomialOpinion::new(0.1, 0.0, 0.9, 0.2);
 
@@ -385,6 +365,20 @@ mod tests {
         assert_eq!(op1.multiply(op2), expected_result);
         assert_eq!(op1 * op2, expected_result);
     }
+
+    #[test]
+    fn test_binomial_comultiplication() {
+        // Test taken from book A. Josang Subjective Logic. chap 7 fig 7.3
+        let op1 = BinomialOpinion::new(0.75, 0.15, 0.1, 0.5);
+        let op2 = BinomialOpinion::new(0.35, 0.0, 0.65, 0.2);
+
+        let expected_result = BinomialOpinion::new(0.84, 0.6, 0.1, 0.6);
+
+        assert_eq!(op1.comult(op2), expected_result);
+        let prob = op1.prob() + op2.prob() - (op1.prob() * op2.prob());
+        assert!(BinomialOpinion::_isclose(prob, 0.9, EPSILON));
+    }
+
 
     #[test]
     fn test_binomial_division() {
@@ -402,4 +396,16 @@ mod tests {
         assert_eq!(op1.divide(op2), expected_result);
         assert_eq!(op1 / op2, expected_result);
     }
+
+    #[test]
+    fn test_binomial_codivision() {
+        // Test taken from book A. Josang Subjective Logic. chap 7 fig 7.3
+        let op1 = BinomialOpinion::new(0.05, 0.55, 0.4, 0.75);
+        let op2 = BinomialOpinion::new(0.00, 0.8, 0.2, 0.5);
+
+        let expected_result = BinomialOpinion::new(0.05, 0.49, 0.46, 0.5);
+
+        assert_eq!(op1.codiv(op2), expected_result);
+    }
+
 }
