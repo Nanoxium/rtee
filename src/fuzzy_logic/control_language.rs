@@ -3,7 +3,11 @@ use std::ops::Range;
 use pest::{iterators::*, Parser};
 use pest_derive::Parser;
 
-use anyhow::Result;
+use anyhow::{Error, Result};
+
+use crate::prelude::{Mamdani, Rule as FuzzyRule};
+
+use super::{controller::FuzzyController, FuzzyVariable};
 
 #[derive(Parser)]
 #[grammar = "fuzzy_logic/grammar/fcl.pest"]
@@ -15,6 +19,8 @@ pub enum VarType {
     Number,
     Boolean,
 }
+
+pub type AstRoot = AstNode;
 
 /// Node types used to generate the Abstract Syntax Tree
 #[derive(Debug, Clone)]
@@ -91,7 +97,9 @@ pub fn generate_ast(pair: Pair<Rule>) -> anyhow::Result<AstNode> {
         }
         Rule::operators => {
             let inner = pair.into_inner();
-            Ok(AstNode::Operator { name: inner.as_str().into() })
+            Ok(AstNode::Operator {
+                name: inner.as_str().into(),
+            })
         }
         Rule::antecedent => {
             println!("Antecedent called : {:#?}", pair.as_str());
@@ -150,6 +158,52 @@ pub fn generate_ast(pair: Pair<Rule>) -> anyhow::Result<AstNode> {
         }
         Rule::EOI => Ok(AstNode::EOI),
         _ => unimplemented!("Rule not implemented: {:#?}", pair.as_rule()),
+    }
+}
+
+impl AstNode {
+    fn generate_fuzzy_mamdani_program(&self) -> Result<FuzzyController<Mamdani>> {
+        let mut inputs = Vec::new();
+        let mut output = None;
+        let mut rules = Vec::new();
+
+        self.traverse(&mut inputs, &mut output, &mut rules)?;
+
+        let output = output.ok_or_else(|| Error::msg("No output variable defined"))?;
+
+        let mamdani = Mamdani::new(inputs, output, rules);
+
+        Ok(FuzzyController::new(mamdani))
+    }
+
+    fn traverse(
+        &self,
+        inputs: &mut Vec<FuzzyVariable>,
+        outputs: &mut Option<Vec<FuzzyVariable>>,
+        rules: &mut Vec<FuzzyRule>,
+    ) -> Result<()> {
+        match self {
+            AstNode::FunctionBlock(blocks) => {
+                for block in blocks {
+                    block.traverse(inputs, output, rules)?;
+                }
+            }
+            AstNode::VarInput(var_inputs) => {
+                for vi in var_inputs {
+                    
+                }
+            }
+            AstNode::VarOutput(var_output) => {
+               output = Some(var_output);
+            }
+            AstNode::VarOutput(var_inputs) => {
+                for vi in var_inputs {
+                    
+                }
+            }
+            _ => {}
+        }
+        Ok(())
     }
 }
 

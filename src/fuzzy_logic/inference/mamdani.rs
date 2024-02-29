@@ -3,15 +3,15 @@ use super::FuzzySystem;
 
 pub struct Mamdani {
     inputs: Vec<FuzzyVariable>,
-    output: FuzzyVariable,
+    outputs: Vec<FuzzyVariable>,
     pub rules: Vec<Rule>,
 }
 
 impl Mamdani {
-    pub fn new(inputs: Vec<FuzzyVariable>, output: FuzzyVariable, rules: Vec<Rule>) -> Self {
+    pub fn new(inputs: Vec<FuzzyVariable>, outputs: Vec<FuzzyVariable>, rules: Vec<Rule>) -> Self {
         Self {
             inputs,
-            output,
+            outputs,
             rules,
         }
     }
@@ -65,7 +65,7 @@ impl FuzzySystem for Mamdani {
 
         // Aggregate the rule outputs
         let aggregated_output = self
-            .output
+            .outputs
             .fuzzy_sets
             .iter()
             .map(|output_set| {
@@ -80,7 +80,7 @@ impl FuzzySystem for Mamdani {
             .collect::<Vec<(String, f64)>>();
 
         // Defuzzify the aggregated output
-        let defuzzified_output = (self.output.defuzz_fn)(
+        let defuzzified_output = (self.outputs.defuzz_fn)(
             aggregated_output
                 .iter()
                 .map(|(_, membership)| membership)

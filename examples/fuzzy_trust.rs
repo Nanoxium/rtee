@@ -66,7 +66,7 @@ fn main() {
     // Using the mamdani fuzzy inference system
     let mamdani = Mamdani::new(
         vec![reputation, transaction_history],
-        trust_level,
+        vec![trust_level],
         vec![
             rule1, rule2, rule3, rule4, rule5, rule6, rule7, rule8, rule9,
         ],

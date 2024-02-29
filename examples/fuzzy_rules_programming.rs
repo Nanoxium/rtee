@@ -13,7 +13,6 @@ fn main() -> Result<()> {
 
     fcl_file.read_to_string(&mut fcl_program).unwrap();
 
-
     let start = std::time::Instant::now();
     let mut values = fcl_parser(fcl_program.as_str())?;
     let stop = std::time::Instant::now();
